@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepal Jobs Dashboard — Complete Project Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --accent: #f0a500;
+    --accent2: #e05c5c;
+    --accent3: #4ec9b0;
+    --text: #e8eaf0;
+    --text-muted: #7a8096;
+    --border: #252a38;
+    --step1: #f0a500;
+    --step2: #e05c5c;
+    --step3: #9b59b6;
+    --step4: #4ec9b0;
+    --step5: #3498db;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(240,165,0,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(78,201,176,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-label::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 32px;
+  }
+
+  h1 span.highlight {
+    color: var(--accent);
+    font-style: italic;
+  }
+  h1 span.dim { color: var(--text-muted); }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 560px;
+    margin-bottom: 60px;
+    line-height: 1.8;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* PIPELINE OVERVIEW */
+  .pipeline {
+    padding: 80px 60px;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-header {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 400px;
+  }
+
+  .pipeline-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+
+  .pipe-step {
+    flex: 1;
+    min-width: 160px;
+    background: var(--surface);
+    padding: 32px 24px;
+    position: relative;
+    border: 1px solid var(--border);
+    border-right: none;
+    transition: background 0.2s;
+  }
+  .pipe-step:first-child { border-radius: 8px 0 0 8px; }
+  .pipe-step:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+  .pipe-step:hover { background: var(--surface2); }
+
+  .pipe-step::after {
+    content: '→';
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: var(--text-muted);
+    z-index: 2;
+    background: var(--bg);
+    padding: 4px 2px;
+  }
+  .pipe-step:last-child::after { display: none; }
+
+  .pipe-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 12px;
+    opacity: 0.3;
+  }
+
+  .pipe-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .pipe-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* STEPS */
+  .steps-container {
+    padding: 60px;
+  }
+
+  .step-block {
+    margin-bottom: 80px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 60px;
+    align-items: start;
+    position: relative;
+  }
+
+  .step-block::before {
+    content: '';
+    position: absolute;
+    left: 140px;
+    top: 60px;
+    bottom: -80px;
+    width: 1px;
+    background: var(--border);
+  }
+  .step-block:last-child::before { display: none; }
+
+  .step-sidebar {
+    position: sticky;
+    top: 40px;
+  }
+
+  .step-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 100px;
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -4px;
+    margin-bottom: 16px;
+    opacity: 0.12;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .step-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .step-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  .step-content h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .step-content p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+
+  .step-content strong { color: var(--text); }
+
+  .code-block {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .code-block::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 10px; right: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  pre {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #abb2bf;
+  }
+
+  .kw { color: #c678dd; }
+  .fn { color: #61afef; }
+  .str { color: #98c379; }
+  .cmt { color: #5c6370; font-style: italic; }
+  .num { color: #d19a66; }
+  .cls { color: #e5c07b; }
+
+  .info-box {
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .info-box.tip {
+    background: rgba(240,165,0,0.07);
+    border-left: 3px solid var(--accent);
+  }
+  .info-box.warning {
+    background: rgba(224,92,92,0.07);
+    border-left: 3px solid var(--accent2);
+  }
+  .info-box.success {
+    background: rgba(78,201,176,0.07);
+    border-left: 3px solid var(--accent3);
+  }
+  .info-box-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .info-box.tip .info-box-title { color: var(--accent); }
+  .info-box.warning .info-box-title { color: var(--accent2); }
+  .info-box.success .info-box-title { color: var(--accent3); }
+
+  .checklist {
+    list-style: none;
+    margin: 16px 0;
+  }
+  .checklist li {
+    padding: 8px 0;
+    padding-left: 28px;
+    position: relative;
+    font-size: 14px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .checklist li strong { color: var(--text); }
+
+  .file-tree {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .file-tree .folder { color: var(--accent); }
+  .file-tree .file { color: #abb2bf; padding-left: 24px; }
+  .file-tree .file::before { content: '├── '; color: var(--border); }
+  .file-tree .comment { color: var(--text-muted); font-size: 11px; }
+
+  /* Step colors */
+  .s1 { color: var(--step1); border-color: var(--step1); }
+  .s2 { color: var(--step2); border-color: var(--step2); }
+  .s3 { color: var(--step3); border-color: var(--step3); }
+  .s4 { color: var(--step4); border-color: var(--step4); }
+  .s5 { color: var(--step5); border-color: var(--step5); }
+
+  .badge-s1 { background: rgba(240,165,0,0.1); color: var(--step1); }
+  .badge-s2 { background: rgba(224,92,92,0.1); color: var(--step2); }
+  .badge-s3 { background: rgba(155,89,182,0.1); color: var(--step3); }
+  .badge-s4 { background: rgba(78,201,176,0.1); color: var(--step4); }
+  .badge-s5 { background: rgba(52,152,219,0.1); color: var(--step5); }
+
+  .num-s1 { color: var(--step1); }
+  .num-s2 { color: var(--step2); }
+  .num-s3 { color: var(--step3); }
+  .num-s4 { color: var(--step4); }
+  .num-s5 { color: var(--step5); }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: var(--text);
+  }
+
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .arch-box {
+    display: inline-block;
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 4px;
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .arch-arrow {
+    color: var(--text-muted);
+    margin: 0 8px;
+    font-size: 18px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 60px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+
+  footer h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: var(--text-muted);
+  }
+
+  footer p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  footer .accent { color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .hero { padding: 60px 30px; }
+    .pipeline { padding: 60px 30px; }
+    .steps-container { padding: 40px 30px; }
+    .step-block { grid-template-columns: 1fr; gap: 20px; }
+    .step-block::before { display: none; }
+    footer { grid-template-columns: 1fr; padding: 40px 30px; }
+    .hero-stats { gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Nepal Job Market Analytics — Complete Project Guide</div>
+  <h1>
+    From<br>
+    <span class="highlight">Scraping</span><br>
+    <span class="dim">to Dashboard</span>
+  </h1>
+  <p class="hero-desc">
+    A complete, step-by-step technical guide for your team project — covering real-time scraping, data pipeline, cleaning, EDA, and live dashboard. Built around your existing <strong>MeroJob</strong> and <strong>KumariJob</strong> scrapers.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">5</span>
+      <span class="stat-label">Major Stages</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2</span>
+      <span class="stat-label">Job Sites</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">7</span>
+      <span class="stat-label">Python Files</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">1</span>
+      <span class="stat-label">Live Dashboard</span>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE OVERVIEW -->
+<section class="pipeline">
+  <div class="section-header">The Full Pipeline</div>
+  <div class="pipeline-flow">
+    <div class="pipe-step">
+      <div class="pipe-num num-s1">01</div>
+      <div class="pipe-title" style="color:var(--step1)">Scrape</div>
+      <div class="pipe-desc">Collect job data from MeroJob API + KumariJob on a schedule</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num num-s2">02</div>
+      <div class="pipe-title" style="color:var(--step2)">Store</div>
+      <div class="pipe-desc">Save raw data to SQLite database (not just CSV files)</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num num-s3">03</div>
+      <div class="pipe-title" style="color:var(--step3)">Clean</div>
+      <div class="pipe-desc">Fix messy data, remove duplicates, standardize fields</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num num-s4">04</div>
+      <div class="pipe-title" style="color:var(--step4)">Analyze</div>
+      <div class="pipe-desc">EDA: trends, top skills, salary ranges, category insights</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num num-s5">05</div>
+      <div class="pipe-title" style="color:var(--step5)">Dashboard</div>
+      <div class="pipe-desc">Live Streamlit web app with auto-refreshing charts</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="steps-container" style="padding-bottom:0">
+  <div class="section-header">Project Architecture</div>
+  <div class="arch-diagram">
+    <div style="margin-bottom:16px; font-size:11px; letter-spacing:3px; text-transform:uppercase;">How all the pieces connect</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step1); color:var(--step1)">merojob_scraper.py</span>
+      <span class="arch-arrow">+</span>
+      <span class="arch-box" style="border-color:var(--step1); color:var(--step1)">scrape_kumari.py</span>
+    </div>
+    <div style="font-size:24px; color:var(--text-muted); margin:8px 0;">↓</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step2); color:var(--step2)">scheduler.py (runs every 7 days)</span>
+    </div>
+    <div style="font-size:24px; color:var(--text-muted); margin:8px 0;">↓</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step2); color:var(--step2)">jobs.db (SQLite Database)</span>
+    </div>
+    <div style="font-size:24px; color:var(--text-muted); margin:8px 0;">↓</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step3); color:var(--step3)">clean_data.py</span>
+    </div>
+    <div style="font-size:24px; color:var(--text-muted); margin:8px 0;">↓</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step3); color:var(--step3)">jobs_clean table in DB</span>
+    </div>
+    <div style="font-size:24px; color:var(--text-muted); margin:8px 0;">↓</div>
+    <div>
+      <span class="arch-box" style="border-color:var(--step4); color:var(--step4)">eda_analysis.py (Jupyter)</span>
+      <span class="arch-arrow">+</span>
+      <span class="arch-box" style="border-color:var(--step5); color:var(--step5)">dashboard.py (Streamlit)</span>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps-container">
+
+  <!-- STEP 1 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number num-s1">01</div>
+      <span class="step-badge badge-s1">Foundation</span>
+      <div class="step-title">Project Setup & File Structure</div>
+      <div class="step-time">⏱ 15 minutes</div>
+    </div>
+    <div class="step-content">
+      <h2>Set up your project folder</h2>
+      <p>First, create a clean folder structure. Every file for this project lives in one place. Open your terminal and run these commands:</p>
+      <div class="code-block" data-label="TERMINAL">
+<pre><span class="cmt"># Create project folder and go into it</span>
+<span class="fn">mkdir</span> nepal_jobs_dashboard
+<span class="fn">cd</span> nepal_jobs_dashboard
+
+<span class="cmt"># Create a virtual environment (keeps packages organized)</span>
+<span class="fn">python</span> -m venv venv
+
+<span class="cmt"># Activate it (Windows)</span>
+venv\Scripts\activate
+
+<span class="cmt"># Activate it (Mac/Linux)</span>
+<span class="fn">source</span> venv/bin/activate
+
+<span class="cmt"># Install all libraries you need</span>
+<span class="fn">pip</span> install requests pandas beautifulsoup4 schedule plotly streamlit</pre>
+      </div>
+      <p>Your folder structure should look like this. See the code files in the download ZIP for each file's contents:</p>
+      <div class="file-tree">
+        <div class="folder">📁 nepal_jobs_dashboard/</div>
+        <div class="file">merojob_scraper.py <span class="comment">← your existing file (modified)</span></div>
+        <div class="file">scrape_kumari.py <span class="comment">← your existing file (modified)</span></div>
+        <div class="file">scheduler.py <span class="comment">← NEW: runs both scrapers on schedule</span></div>
+        <div class="file">clean_data.py <span class="comment">← NEW: cleans & processes data</span></div>
+        <div class="file">eda_analysis.py <span class="comment">← NEW: runs EDA, saves charts</span></div>
+        <div class="file">dashboard.py <span class="comment">← NEW: Streamlit live dashboard</span></div>
+        <div class="file">jobs.db <span class="comment">← auto-created: SQLite database</span></div>
+      </div>
+      <div class="info-box tip">
+        <div class="info-box-title">💡 Why SQLite instead of CSV?</div>
+        Your scrapers currently save CSV files. That's fine for one run, but with real-time scraping you'll have 50+ CSV files and can't query across them. SQLite is a <strong>single file database</strong> (jobs.db) that you can query like Excel but with code. It's perfect for this project — no extra setup needed.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number num-s2">02</div>
+      <span class="step-badge badge-s2">Data Collection</span>
+      <div class="step-title">Modified Scrapers + Database Storage</div>
+      <div class="step-time">⏱ 30 minutes</div>
+    </div>
+    <div class="step-content">
+      <h2>Save to Database Instead of CSV</h2>
+      <p>Your existing scrapers work great — we just need to change where they <em>save</em> the data. Instead of creating a new CSV every run, we save to a database. This means old data is kept and new data is added automatically. This IS your "real-time" pipeline.</p>
+
+      <div class="info-box tip">
+        <div class="info-box-title">🧠 What "Real-Time" Actually Means for This Project</div>
+        Real-time doesn't mean every second. For job listings, running your scraper <strong>every day</strong> (or every 7 days) is perfectly "real-time" because job postings don't change by the minute. The dashboard reads the latest data from the database — so it always shows the most recent scrape. That's your real-time pipeline!
+      </div>
+
+      <h3>The Central Database Module (database.py)</h3>
+      <p>Create one file that handles all database operations, so both scrapers can use it:</p>
+      <div class="code-block" data-label="database.py">
+<pre><span class="kw">import</span> sqlite3
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+DB_PATH = <span class="str">"jobs.db"</span>
+
+<span class="kw">def</span> <span class="fn">get_connection</span>():
+    <span class="str">"""Returns a database connection"""</span>
+    <span class="kw">return</span> sqlite3.connect(DB_PATH)
+
+<span class="kw">def</span> <span class="fn">setup_database</span>():
+    <span class="str">"""Creates tables if they don't exist yet"""</span>
+    conn = <span class="fn">get_connection</span>()
+    c = conn.cursor()
+    
+    <span class="cmt"># Raw MeroJob data table</span>
+    c.execute(<span class="str">"""
+        CREATE TABLE IF NOT EXISTS merojob_raw (
+            id          INTEGER,
+            title       TEXT,
+            company     TEXT,
+            location    TEXT,
+            categories  TEXT,
+            deadline    TEXT,
+            job_level   TEXT,
+            vacancies   INTEGER,
+            salary_min  REAL,
+            salary_max  REAL,
+            currency    TEXT,
+            skills      TEXT,
+            job_url     TEXT,
+            scraped_at  TEXT,
+            PRIMARY KEY (id, scraped_at)
+        )
+    """</span>)
+    
+    <span class="cmt"># Raw KumariJob data table</span>
+    c.execute(<span class="str">"""
+        CREATE TABLE IF NOT EXISTS kumari_raw (
+            job_id      TEXT,
+            job_title   TEXT,
+            company     TEXT,
+            link        TEXT,
+            salary      TEXT,
+            experience  TEXT,
+            industry    TEXT,
+            job_level   TEXT,
+            education   TEXT,
+            scraped_at  TEXT,
+            PRIMARY KEY (job_id, scraped_at)
+        )
+    """</span>)
+    
+    conn.commit()
+    conn.close()
+    <span class="fn">print</span>(<span class="str">"✅ Database ready"</span>)
+
+<span class="kw">def</span> <span class="fn">save_merojob_data</span>(jobs_list):
+    <span class="str">"""Saves MeroJob jobs to database"""</span>
+    conn = <span class="fn">get_connection</span>()
+    scraped_at = datetime.now().<span class="fn">isoformat</span>()
+    saved = <span class="num">0</span>
+    <span class="kw">for</span> job <span class="kw">in</span> jobs_list:
+        <span class="kw">try</span>:
+            conn.execute(<span class="str">"""
+                INSERT OR IGNORE INTO merojob_raw
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """</span>, (
+                job.get(<span class="str">'id'</span>), job.get(<span class="str">'title'</span>),
+                job.get(<span class="str">'company'</span>), job.get(<span class="str">'location'</span>),
+                job.get(<span class="str">'categories'</span>), job.get(<span class="str">'deadline'</span>),
+                job.get(<span class="str">'job_level'</span>), job.get(<span class="str">'vacancies'</span>),
+                job.get(<span class="str">'salary_min'</span>), job.get(<span class="str">'salary_max'</span>),
+                job.get(<span class="str">'currency'</span>), job.get(<span class="str">'skills'</span>),
+                job.get(<span class="str">'job_url'</span>), scraped_at
+            ))
+            saved += <span class="num">1</span>
+        <span class="kw">except</span> <span class="cls">Exception</span> <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="str">f"Skip job {job.get('id')}: {e}"</span>)
+    conn.commit()
+    conn.close()
+    <span class="fn">print</span>(<span class="str">f"✅ Saved {saved} MeroJob listings to DB"</span>)
+
+<span class="kw">def</span> <span class="fn">save_kumari_data</span>(jobs_dict):
+    <span class="str">"""Saves KumariJob jobs to database"""</span>
+    conn = <span class="fn">get_connection</span>()
+    scraped_at = datetime.now().<span class="fn">isoformat</span>()
+    saved = <span class="num">0</span>
+    <span class="kw">for</span> job_id, job <span class="kw">in</span> jobs_dict.items():
+        <span class="kw">try</span>:
+            conn.execute(<span class="str">"""
+                INSERT OR IGNORE INTO kumari_raw
+                VALUES (?,?,?,?,?,?,?,?,?,?)
+            """</span>, (
+                job_id, job.get(<span class="str">'Job Title'</span>),
+                job.get(<span class="str">'Company'</span>), job.get(<span class="str">'Link'</span>),
+                job.get(<span class="str">'Salary'</span>), job.get(<span class="str">'Experience'</span>),
+                job.get(<span class="str">'Industry'</span>), job.get(<span class="str">'Job Level'</span>),
+                job.get(<span class="str">'Education'</span>), scraped_at
+            ))
+            saved += <span class="num">1</span>
+        <span class="kw">except</span> <span class="cls">Exception</span> <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="str">f"Skip job {job_id}: {e}"</span>)
+    conn.commit()
+    conn.close()
+    <span class="fn">print</span>(<span class="str">f"✅ Saved {saved} KumariJob listings to DB"</span>)
+
+<span class="kw">def</span> <span class="fn">load_all_jobs</span>():
+    <span class="str">"""Loads ALL jobs from both sources as one DataFrame"""</span>
+    conn = <span class="fn">get_connection</span>()
+    df = pd.<span class="fn">read_sql</span>(<span class="str">"SELECT * FROM jobs_clean"</span>, conn)
+    conn.close()
+    <span class="kw">return</span> df</pre>
+      </div>
+
+      <div class="info-box warning">
+        <div class="info-box-title">⚠️ Important Change to Your Scrapers</div>
+        In both your scraper files, find the line that writes to CSV (df.to_csv(...) and open('kumari_jobs.csv', ...)) and replace those sections with calls to <strong>save_merojob_data()</strong> and <strong>save_kumari_data()</strong> from the database module. The full modified files are in the download package.
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number num-s3">03</div>
+      <span class="step-badge badge-s3">Data Cleaning</span>
+      <div class="step-title">Transform & Clean the Data</div>
+      <div class="step-time">⏱ 45 minutes</div>
+    </div>
+    <div class="step-content">
+      <h2>Clean and Process (clean_data.py)</h2>
+      <p>This is the ETL step — Extract, Transform, Load. You take messy raw data and make it analysis-ready. This runs <strong>after</strong> every scrape automatically.</p>
+
+      <div class="info-box tip">
+        <div class="info-box-title">💡 What Cleaning Actually Does</div>
+        Your raw data has problems: some salaries say "N/A", some deadlines are in different formats, some locations say "Kathmandu" and others say "KTM". Cleaning standardizes all of this so your charts work properly.
+      </div>
+
+      <div class="code-block" data-label="clean_data.py">
+<pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> sqlite3
+<span class="kw">import</span> re
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">clean_and_merge</span>():
+    conn = sqlite3.<span class="fn">connect</span>(<span class="str">"jobs.db"</span>)
+
+    <span class="cmt"># ── Load raw data ──────────────────────────────────────</span>
+    mero = pd.<span class="fn">read_sql</span>(<span class="str">"SELECT * FROM merojob_raw"</span>, conn)
+    kumari = pd.<span class="fn">read_sql</span>(<span class="str">"SELECT * FROM kumari_raw"</span>, conn)
+
+    <span class="cmt"># ── Standardize MeroJob columns ────────────────────────</span>
+    mero_clean = pd.<span class="fn">DataFrame</span>()
+    mero_clean[<span class="str">'source'</span>]      = <span class="str">'merojob'</span>
+    mero_clean[<span class="str">'job_id'</span>]      = <span class="str">'mj_'</span> + mero[<span class="str">'id'</span>].<span class="fn">astype</span>(<span class="str">str</span>)
+    mero_clean[<span class="str">'title'</span>]       = mero[<span class="str">'title'</span>].<span class="fn">str.strip</span>().<span class="fn">str.title</span>()
+    mero_clean[<span class="str">'company'</span>]     = mero[<span class="str">'company'</span>].<span class="fn">str.strip</span>()
+    mero_clean[<span class="str">'location'</span>]    = mero[<span class="str">'location'</span>].<span class="fn">apply</span>(clean_location)
+    mero_clean[<span class="str">'category'</span>]    = mero[<span class="str">'categories'</span>].<span class="fn">fillna</span>(<span class="str">'Unknown'</span>)
+    mero_clean[<span class="str">'job_level'</span>]   = mero[<span class="str">'job_level'</span>].<span class="fn">fillna</span>(<span class="str">'Not Specified'</span>)
+    mero_clean[<span class="str">'skills'</span>]      = mero[<span class="str">'skills'</span>].<span class="fn">fillna</span>(<span class="str">''</span>)
+    mero_clean[<span class="str">'salary_min'</span>]  = pd.<span class="fn">to_numeric</span>(mero[<span class="str">'salary_min'</span>], errors=<span class="str">'coerce'</span>)
+    mero_clean[<span class="str">'salary_max'</span>]  = pd.<span class="fn">to_numeric</span>(mero[<span class="str">'salary_max'</span>], errors=<span class="str">'coerce'</span>)
+    mero_clean[<span class="str">'deadline'</span>]    = pd.<span class="fn">to_datetime</span>(mero[<span class="str">'deadline'</span>], errors=<span class="str">'coerce'</span>)
+    mero_clean[<span class="str">'scraped_at'</span>]  = pd.<span class="fn">to_datetime</span>(mero[<span class="str">'scraped_at'</span>])
+    mero_clean[<span class="str">'job_url'</span>]     = mero[<span class="str">'job_url'</span>]
+    mero_clean[<span class="str">'experience'</span>]  = <span class="str">'N/A'</span>
+    mero_clean[<span class="str">'education'</span>]   = <span class="str">'N/A'</span>
+
+    <span class="cmt"># ── Standardize KumariJob columns ──────────────────────</span>
+    kumari_clean = pd.<span class="fn">DataFrame</span>()
+    kumari_clean[<span class="str">'source'</span>]     = <span class="str">'kumarijob'</span>
+    kumari_clean[<span class="str">'job_id'</span>]     = <span class="str">'kj_'</span> + kumari[<span class="str">'job_id'</span>].<span class="fn">astype</span>(<span class="str">str</span>)
+    kumari_clean[<span class="str">'title'</span>]      = kumari[<span class="str">'job_title'</span>].<span class="fn">str.strip</span>().<span class="fn">str.title</span>()
+    kumari_clean[<span class="str">'company'</span>]    = kumari[<span class="str">'company'</span>].<span class="fn">str.strip</span>()
+    kumari_clean[<span class="str">'location'</span>]   = <span class="str">'Kathmandu'</span>   <span class="cmt"># KumariJob is mostly KTM</span>
+    kumari_clean[<span class="str">'category'</span>]   = kumari[<span class="str">'industry'</span>].<span class="fn">fillna</span>(<span class="str">'Unknown'</span>)
+    kumari_clean[<span class="str">'job_level'</span>]  = kumari[<span class="str">'job_level'</span>].<span class="fn">fillna</span>(<span class="str">'Not Specified'</span>)
+    kumari_clean[<span class="str">'skills'</span>]     = <span class="str">''</span>
+    kumari_clean[<span class="str">'salary_min'</span>] = kumari[<span class="str">'salary'</span>].<span class="fn">apply</span>(extract_salary_min)
+    kumari_clean[<span class="str">'salary_max'</span>] = kumari[<span class="str">'salary'</span>].<span class="fn">apply</span>(extract_salary_max)
+    kumari_clean[<span class="str">'deadline'</span>]   = pd.NaT
+    kumari_clean[<span class="str">'scraped_at'</span>] = pd.<span class="fn">to_datetime</span>(kumari[<span class="str">'scraped_at'</span>])
+    kumari_clean[<span class="str">'job_url'</span>]    = kumari[<span class="str">'link'</span>]
+    kumari_clean[<span class="str">'experience'</span>] = kumari[<span class="str">'experience'</span>].<span class="fn">fillna</span>(<span class="str">'N/A'</span>)
+    kumari_clean[<span class="str">'education'</span>]  = kumari[<span class="str">'education'</span>].<span class="fn">fillna</span>(<span class="str">'N/A'</span>)
+
+    <span class="cmt"># ── Merge both sources ─────────────────────────────────</span>
+    df = pd.<span class="fn">concat</span>([mero_clean, kumari_clean], ignore_index=<span class="kw">True</span>)
+
+    <span class="cmt"># ── Remove duplicates (same title + company) ──────────</span>
+    df = df.<span class="fn">drop_duplicates</span>(subset=[<span class="str">'title'</span>, <span class="str">'company'</span>, <span class="str">'source'</span>])
+
+    <span class="cmt"># ── Remove rows with no title ─────────────────────────</span>
+    df = df[df[<span class="str">'title'</span>].<span class="fn">notna</span>() & (df[<span class="str">'title'</span>] != <span class="str">'N/A'</span>)]
+
+    <span class="cmt"># ── Save cleaned data back to DB ──────────────────────</span>
+    df.<span class="fn">to_sql</span>(<span class="str">'jobs_clean'</span>, conn, if_exists=<span class="str">'replace'</span>, index=<span class="kw">False</span>)
+    conn.close()
+
+    <span class="fn">print</span>(<span class="str">f"✅ Cleaned {len(df)} total jobs — saved to jobs_clean table"</span>)
+    <span class="kw">return</span> df
+
+<span class="kw">def</span> <span class="fn">clean_location</span>(loc):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(loc, <span class="fn">str</span>): <span class="kw">return</span> <span class="str">'Unknown'</span>
+    loc = loc.<span class="fn">strip</span>()
+    <span class="cmt"># Map common abbreviations to full names</span>
+    mapping = {
+        <span class="str">'KTM'</span>: <span class="str">'Kathmandu'</span>, <span class="str">'Ktm'</span>: <span class="str">'Kathmandu'</span>,
+        <span class="str">'PKR'</span>: <span class="str">'Pokhara'</span>, <span class="str">'PKR.'</span>: <span class="str">'Pokhara'</span>,
+        <span class="str">'Bkt'</span>: <span class="str">'Bhaktapur'</span>, <span class="str">'BKT'</span>: <span class="str">'Bhaktapur'</span>
+    }
+    <span class="kw">return</span> mapping.get(loc, loc)
+
+<span class="kw">def</span> <span class="fn">extract_salary_min</span>(salary_str):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(salary_str, <span class="fn">str</span>): <span class="kw">return</span> <span class="kw">None</span>
+    nums = re.<span class="fn">findall</span>(<span class="str">r'[\d,]+'</span>, salary_str)
+    <span class="kw">if</span> nums:
+        <span class="kw">return</span> <span class="fn">float</span>(nums[<span class="num">0</span>].<span class="fn">replace</span>(<span class="str">','</span>,<span class="str">''</span>))
+    <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="kw">def</span> <span class="fn">extract_salary_max</span>(salary_str):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(salary_str, <span class="fn">str</span>): <span class="kw">return</span> <span class="kw">None</span>
+    nums = re.<span class="fn">findall</span>(<span class="str">r'[\d,]+'</span>, salary_str)
+    <span class="kw">if</span> <span class="fn">len</span>(nums) > <span class="num">1</span>:
+        <span class="kw">return</span> <span class="fn">float</span>(nums[<span class="num">1</span>].<span class="fn">replace</span>(<span class="str">','</span>,<span class="str">''</span>))
+    <span class="kw">return</span> <span class="kw">None</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">clean_and_merge</span>()</pre>
+      </div>
+
+      <div class="info-box success">
+        <div class="info-box-title">✅ Key Cleaning Operations</div>
+        <ul class="checklist">
+          <li><strong>str.title()</strong> — converts "software ENGINEER" → "Software Engineer"</li>
+          <li><strong>pd.to_numeric(errors='coerce')</strong> — turns "N/A" salaries into empty (None) so math works</li>
+          <li><strong>pd.to_datetime(errors='coerce')</strong> — standardizes all date formats</li>
+          <li><strong>drop_duplicates()</strong> — removes the same job posted twice</li>
+          <li><strong>fillna()</strong> — replaces missing values with "Not Specified" or "Unknown"</li>
+          <li><strong>clean_location()</strong> — maps abbreviations to full city names</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number num-s4">04</div>
+      <span class="step-badge badge-s4">Analysis</span>
+      <div class="step-title">Exploratory Data Analysis (EDA)</div>
+      <div class="step-time">⏱ 1 hour</div>
+    </div>
+    <div class="step-content">
+      <h2>Understand What the Data Tells You</h2>
+      <p>EDA means asking questions and making charts to understand patterns. For your teacher's requirements, you need to show <strong>at least 5-6 different types of analysis</strong>.</p>
+
+      <div class="info-box tip">
+        <div class="info-box-title">📊 Key Questions to Answer in EDA</div>
+        <ul class="checklist">
+          <li><strong>Which job categories</strong> have the most openings in Nepal?</li>
+          <li><strong>What cities</strong> have the most jobs?</li>
+          <li><strong>What salary range</strong> do most jobs offer?</li>
+          <li><strong>What skills</strong> appear most frequently in job listings?</li>
+          <li><strong>What job level</strong> (Entry/Mid/Senior) is most demanded?</li>
+          <li><strong>Which companies</strong> are hiring the most?</li>
+          <li><strong>Trend over time</strong> — when were most jobs posted? (scraped_at column)</li>
+        </ul>
+      </div>
+
+      <div class="code-block" data-label="eda_analysis.py">
+<pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> sqlite3
+<span class="kw">import</span> plotly.express <span class="kw">as</span> px
+<span class="kw">import</span> plotly.graph_objects <span class="kw">as</span> go
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="kw">import</span> os
+
+<span class="cmt"># Load cleaned data</span>
+conn = sqlite3.<span class="fn">connect</span>(<span class="str">"jobs.db"</span>)
+df = pd.<span class="fn">read_sql</span>(<span class="str">"SELECT * FROM jobs_clean"</span>, conn)
+conn.close()
+
+os.<span class="fn">makedirs</span>(<span class="str">"charts"</span>, exist_ok=<span class="kw">True</span>)
+<span class="fn">print</span>(<span class="str">f"Loaded {len(df)} jobs from {df['source'].nunique()} sources"</span>)
+<span class="fn">print</span>(df.<span class="fn">dtypes</span>)   <span class="cmt"># Shows column data types</span>
+<span class="fn">print</span>(df.<span class="fn">describe</span>()) <span class="cmt"># Basic stats (count, mean, min, max)</span>
+
+<span class="cmt"># ── Chart 1: Top Job Categories ───────────────────────</span>
+cat_counts = df[<span class="str">'category'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="num">15</span>)
+fig1 = px.<span class="fn">bar</span>(
+    x=cat_counts.values, y=cat_counts.index,
+    orientation=<span class="str">'h'</span>,
+    title=<span class="str">"Top 15 Job Categories in Nepal"</span>,
+    labels={<span class="str">'x'</span>: <span class="str">'Number of Jobs'</span>, <span class="str">'y'</span>: <span class="str">'Category'</span>},
+    color=cat_counts.values,
+    color_continuous_scale=<span class="str">'Viridis'</span>
+)
+fig1.<span class="fn">write_html</span>(<span class="str">"charts/top_categories.html"</span>)
+<span class="fn">print</span>(<span class="str">"✅ Chart 1: Top categories saved"</span>)
+
+<span class="cmt"># ── Chart 2: Jobs by Location ─────────────────────────</span>
+loc_counts = df[<span class="str">'location'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="num">12</span>)
+fig2 = px.<span class="fn">pie</span>(
+    values=loc_counts.values, names=loc_counts.index,
+    title=<span class="str">"Jobs Distribution by City"</span>,
+    hole=<span class="num">0.4</span>
+)
+fig2.<span class="fn">write_html</span>(<span class="str">"charts/location_distribution.html"</span>)
+<span class="fn">print</span>(<span class="str">"✅ Chart 2: Location chart saved"</span>)
+
+<span class="cmt"># ── Chart 3: Job Level Distribution ──────────────────</span>
+level_counts = df[<span class="str">'job_level'</span>].<span class="fn">value_counts</span>()
+fig3 = px.<span class="fn">bar</span>(
+    x=level_counts.index, y=level_counts.values,
+    title=<span class="str">"Jobs by Experience Level"</span>,
+    labels={<span class="str">'x'</span>: <span class="str">'Level'</span>, <span class="str">'y'</span>: <span class="str">'Count'</span>},
+    color=level_counts.values,
+    color_continuous_scale=<span class="str">'Cividis'</span>
+)
+fig3.<span class="fn">write_html</span>(<span class="str">"charts/job_levels.html"</span>)
+<span class="fn">print</span>(<span class="str">"✅ Chart 3: Job levels saved"</span>)
+
+<span class="cmt"># ── Chart 4: Salary Distribution ─────────────────────</span>
+salary_df = df[df[<span class="str">'salary_min'</span>].<span class="fn">notna</span>() & (df[<span class="str">'salary_min'</span>] > <span class="num">0</span>)]
+<span class="kw">if</span> <span class="fn">len</span>(salary_df) > <span class="num">0</span>:
+    fig4 = px.<span class="fn">histogram</span>(
+        salary_df, x=<span class="str">'salary_min'</span>,
+        title=<span class="str">"Salary Distribution (Minimum, NRS)"</span>,
+        nbins=<span class="num">30</span>, color_discrete_sequence=[<span class="str">'#f0a500'</span>]
+    )
+    fig4.<span class="fn">write_html</span>(<span class="str">"charts/salary_distribution.html"</span>)
+    <span class="fn">print</span>(<span class="str">"✅ Chart 4: Salary distribution saved"</span>)
+
+<span class="cmt"># ── Chart 5: Top Skills in Demand ────────────────────</span>
+all_skills = []
+<span class="kw">for</span> skills_str <span class="kw">in</span> df[<span class="str">'skills'</span>].<span class="fn">dropna</span>():
+    <span class="kw">if</span> skills_str:
+        all_skills.<span class="fn">extend</span>([s.<span class="fn">strip</span>() <span class="kw">for</span> s <span class="kw">in</span> skills_str.<span class="fn">split</span>(<span class="str">','</span>) <span class="kw">if</span> s.<span class="fn">strip</span>()])
+
+<span class="kw">if</span> all_skills:
+    skill_counts = pd.<span class="fn">Series</span>(Counter(all_skills)).<span class="fn">sort_values</span>(ascending=<span class="kw">False</span>).<span class="fn">head</span>(<span class="num">20</span>)
+    fig5 = px.<span class="fn">bar</span>(
+        x=skill_counts.index, y=skill_counts.values,
+        title=<span class="str">"Top 20 Skills Demanded by Employers"</span>,
+        labels={<span class="str">'x'</span>: <span class="str">'Skill'</span>, <span class="str">'y'</span>: <span class="str">'Frequency'</span>},
+        color=skill_counts.values,
+        color_continuous_scale=<span class="str">'Plasma'</span>
+    )
+    fig5.<span class="fn">write_html</span>(<span class="str">"charts/top_skills.html"</span>)
+    <span class="fn">print</span>(<span class="str">"✅ Chart 5: Top skills saved"</span>)
+
+<span class="cmt"># ── Chart 6: Jobs by Source (MeroJob vs KumariJob) ───</span>
+source_counts = df[<span class="str">'source'</span>].<span class="fn">value_counts</span>()
+fig6 = px.<span class="fn">pie</span>(
+    values=source_counts.values, names=source_counts.index,
+    title=<span class="str">"Jobs by Source Website"</span>
+)
+fig6.<span class="fn">write_html</span>(<span class="str">"charts/source_breakdown.html"</span>)
+<span class="fn">print</span>(<span class="str">"✅ Chart 6: Source breakdown saved"</span>)
+
+<span class="fn">print</span>(<span class="str">"\n📈 All EDA charts saved to /charts folder"</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number num-s5">05</div>
+      <span class="step-badge badge-s5">Dashboard</span>
+      <div class="step-title">Live Streamlit Dashboard</div>
+      <div class="step-time">⏱ 1 hour</div>
+    </div>
+    <div class="step-content">
+      <h2>Build the Live Dashboard (dashboard.py)</h2>
+      <p>Streamlit is a Python library that converts your code into a web app with zero web development. Run it with one command, and it opens in your browser. It auto-refreshes to show the latest data every time you reload.</p>
+
+      <div class="code-block" data-label="TERMINAL — How to run the dashboard">
+<pre><span class="cmt"># Run this from your project folder</span>
+<span class="fn">streamlit</span> run dashboard.py
+
+<span class="cmt"># Opens in browser at: http://localhost:8501</span></pre>
+      </div>
+
+      <div class="code-block" data-label="dashboard.py">
+<pre><span class="kw">import</span> streamlit <span class="kw">as</span> st
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> sqlite3
+<span class="kw">import</span> plotly.express <span class="kw">as</span> px
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cmt"># ── PAGE CONFIGURATION ─────────────────────────────────</span>
+st.<span class="fn">set_page_config</span>(
+    page_title=<span class="str">"Nepal Job Market Dashboard"</span>,
+    page_icon=<span class="str">"🇳🇵"</span>,
+    layout=<span class="str">"wide"</span>
+)
+
+<span class="cmt"># ── LOAD DATA ──────────────────────────────────────────</span>
+<span class="kw">@st.cache_data</span>(ttl=<span class="num">300</span>)  <span class="cmt"># Cache for 5 minutes, then auto-refresh</span>
+<span class="kw">def</span> <span class="fn">load_data</span>():
+    <span class="kw">try</span>:
+        conn = sqlite3.<span class="fn">connect</span>(<span class="str">"jobs.db"</span>)
+        df = pd.<span class="fn">read_sql</span>(<span class="str">"SELECT * FROM jobs_clean"</span>, conn)
+        conn.close()
+        df[<span class="str">'scraped_at'</span>] = pd.<span class="fn">to_datetime</span>(df[<span class="str">'scraped_at'</span>])
+        <span class="kw">return</span> df
+    <span class="kw">except</span>:
+        <span class="kw">return</span> pd.<span class="fn">DataFrame</span>()  <span class="cmt"># Return empty if DB not ready</span>
+
+df = <span class="fn">load_data</span>()
+
+<span class="cmt"># ── HEADER ─────────────────────────────────────────────</span>
+st.<span class="fn">title</span>(<span class="str">"🇳🇵 Nepal Job Market Analytics Dashboard"</span>)
+st.<span class="fn">markdown</span>(<span class="str">f"**Last updated:** {datetime.now().strftime('%Y-%m-%d %H:%M')} | **Data from:** MeroJob + KumariJob"</span>)
+
+<span class="kw">if</span> df.<span class="fn">empty</span>:
+    st.<span class="fn">warning</span>(<span class="str">"No data yet. Run scheduler.py first to collect jobs!"</span>)
+    st.<span class="fn">stop</span>()
+
+<span class="cmt"># ── SIDEBAR FILTERS ────────────────────────────────────</span>
+st.<span class="fn">sidebar</span>.<span class="fn">header</span>(<span class="str">"🔍 Filter Jobs"</span>)
+
+source_filter = st.sidebar.<span class="fn">multiselect</span>(
+    <span class="str">"Source"</span>, df[<span class="str">'source'</span>].<span class="fn">unique</span>(), default=df[<span class="str">'source'</span>].<span class="fn">unique</span>()
+)
+category_filter = st.sidebar.<span class="fn">multiselect</span>(
+    <span class="str">"Category"</span>, df[<span class="str">'category'</span>].<span class="fn">dropna</span>().<span class="fn">unique</span>()[:20]
+)
+level_filter = st.sidebar.<span class="fn">multiselect</span>(
+    <span class="str">"Job Level"</span>, df[<span class="str">'job_level'</span>].<span class="fn">dropna</span>().<span class="fn">unique</span>()
+)
+
+<span class="cmt"># Apply filters</span>
+filtered = df[df[<span class="str">'source'</span>].<span class="fn">isin</span>(source_filter)]
+<span class="kw">if</span> category_filter:
+    filtered = filtered[filtered[<span class="str">'category'</span>].<span class="fn">isin</span>(category_filter)]
+<span class="kw">if</span> level_filter:
+    filtered = filtered[filtered[<span class="str">'job_level'</span>].<span class="fn">isin</span>(level_filter)]
+
+<span class="cmt"># ── KPI METRICS ────────────────────────────────────────</span>
+col1, col2, col3, col4 = st.<span class="fn">columns</span>(<span class="num">4</span>)
+<span class="kw">with</span> col1:
+    st.<span class="fn">metric</span>(<span class="str">"Total Jobs"</span>, <span class="fn">len</span>(filtered))
+<span class="kw">with</span> col2:
+    st.<span class="fn">metric</span>(<span class="str">"Companies Hiring"</span>, filtered[<span class="str">'company'</span>].<span class="fn">nunique</span>())
+<span class="kw">with</span> col3:
+    avg_sal = filtered[<span class="str">'salary_min'</span>].<span class="fn">median</span>()
+    st.<span class="fn">metric</span>(<span class="str">"Median Salary (NRS)"</span>, <span class="str">f"{avg_sal:,.0f}"</span> <span class="kw">if</span> <span class="fn">pd.notna</span>(avg_sal) <span class="kw">else</span> <span class="str">"N/A"</span>)
+<span class="kw">with</span> col4:
+    st.<span class="fn">metric</span>(<span class="str">"Categories"</span>, filtered[<span class="str">'category'</span>].<span class="fn">nunique</span>())
+
+st.<span class="fn">divider</span>()
+
+<span class="cmt"># ── CHARTS ROW 1 ───────────────────────────────────────</span>
+c1, c2 = st.<span class="fn">columns</span>(<span class="num">2</span>)
+
+<span class="kw">with</span> c1:
+    top_cats = filtered[<span class="str">'category'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="num">12</span>)
+    fig = px.<span class="fn">bar</span>(
+        x=top_cats.values, y=top_cats.index,
+        orientation=<span class="str">'h'</span>, title=<span class="str">"Top Job Categories"</span>,
+        color=top_cats.values, color_continuous_scale=<span class="str">'Viridis'</span>,
+        labels={<span class="str">'x'</span>:<span class="str">'Jobs'</span>, <span class="str">'y'</span>:<span class="str">'Category'</span>}
+    )
+    st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)
+
+<span class="kw">with</span> c2:
+    loc_counts = filtered[<span class="str">'location'</span>].<span class="fn">value_counts</span>().<span class="fn">head</span>(<span class="num">10</span>)
+    fig = px.<span class="fn">pie</span>(
+        values=loc_counts.values, names=loc_counts.index,
+        title=<span class="str">"Jobs by City"</span>, hole=<span class="num">0.4</span>
+    )
+    st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)
+
+<span class="cmt"># ── CHARTS ROW 2 ───────────────────────────────────────</span>
+c3, c4 = st.<span class="fn">columns</span>(<span class="num">2</span>)
+
+<span class="kw">with</span> c3:
+    level_counts = filtered[<span class="str">'job_level'</span>].<span class="fn">value_counts</span>()
+    fig = px.<span class="fn">bar</span>(
+        x=level_counts.index, y=level_counts.values,
+        title=<span class="str">"Jobs by Level"</span>, color=level_counts.values,
+        color_continuous_scale=<span class="str">'Cividis'</span>
+    )
+    st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)
+
+<span class="kw">with</span> c4:
+    salary_df = filtered[filtered[<span class="str">'salary_min'</span>].<span class="fn">notna</span>() & (filtered[<span class="str">'salary_min'</span>] > <span class="num">0</span>)]
+    <span class="kw">if</span> <span class="fn">len</span>(salary_df) > <span class="num">0</span>:
+        fig = px.<span class="fn">histogram</span>(
+            salary_df, x=<span class="str">'salary_min'</span>, title=<span class="str">"Salary Distribution"</span>,
+            nbins=<span class="num">25</span>, color_discrete_sequence=[<span class="str">'#f0a500'</span>]
+        )
+        st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)
+
+<span class="cmt"># ── TOP SKILLS ─────────────────────────────────────────</span>
+all_skills = []
+<span class="kw">for</span> s <span class="kw">in</span> filtered[<span class="str">'skills'</span>].<span class="fn">dropna</span>():
+    <span class="kw">if</span> s: all_skills.<span class="fn">extend</span>([x.<span class="fn">strip</span>() <span class="kw">for</span> x <span class="kw">in</span> s.<span class="fn">split</span>(<span class="str">','</span>) <span class="kw">if</span> x.<span class="fn">strip</span>()])
+<span class="kw">if</span> all_skills:
+    skill_s = pd.<span class="fn">Series</span>(Counter(all_skills)).<span class="fn">sort_values</span>(ascending=<span class="kw">False</span>).<span class="fn">head</span>(<span class="num">20</span>)
+    fig = px.<span class="fn">bar</span>(
+        x=skill_s.index, y=skill_s.values,
+        title=<span class="str">"🛠 Top 20 In-Demand Skills"</span>,
+        color=skill_s.values, color_continuous_scale=<span class="str">'Plasma'</span>
+    )
+    st.<span class="fn">plotly_chart</span>(fig, use_container_width=<span class="kw">True</span>)
+
+<span class="cmt"># ── LIVE JOB TABLE ─────────────────────────────────────</span>
+st.<span class="fn">subheader</span>(<span class="str">"📋 All Job Listings"</span>)
+search = st.<span class="fn">text_input</span>(<span class="str">"Search by title or company"</span>)
+<span class="kw">if</span> search:
+    filtered = filtered[
+        filtered[<span class="str">'title'</span>].<span class="fn">str.contains</span>(search, case=<span class="kw">False</span>, na=<span class="kw">False</span>) |
+        filtered[<span class="str">'company'</span>].<span class="fn">str.contains</span>(search, case=<span class="kw">False</span>, na=<span class="kw">False</span>)
+    ]
+
+display_cols = [<span class="str">'title'</span>, <span class="str">'company'</span>, <span class="str">'location'</span>, <span class="str">'category'</span>, 
+                <span class="str">'job_level'</span>, <span class="str">'salary_min'</span>, <span class="str">'source'</span>, <span class="str">'job_url'</span>]
+st.<span class="fn">dataframe</span>(filtered[display_cols], use_container_width=<span class="kw">True</span>, height=<span class="num">400</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-block">
+    <div class="step-sidebar">
+      <div class="step-number" style="color:rgba(255,255,255,0.1)">06</div>
+      <span class="step-badge" style="background:rgba(255,255,255,0.05); color:var(--text-muted)">Scheduler</span>
+      <div class="step-title">Automate Everything</div>
+      <div class="step-time">⏱ 15 minutes</div>
+    </div>
+    <div class="step-content">
+      <h2>The Scheduler: Glue That Holds It Together</h2>
+      <p>This one file runs all the pieces in order. You run it once, and it handles everything on repeat — scraping, cleaning, and keeping the dashboard fresh.</p>
+      <div class="code-block" data-label="scheduler.py">
+<pre><span class="kw">from</span> database <span class="kw">import</span> setup_database
+<span class="kw">from</span> merojob_scraper <span class="kw">import</span> scrape_jobs <span class="kw">as</span> scrape_mero
+<span class="kw">from</span> scrape_kumari <span class="kw">import</span> scrape_kumari_jobs <span class="kw">as</span> scrape_kumari
+<span class="kw">from</span> clean_data <span class="kw">import</span> clean_and_merge
+<span class="kw">import</span> schedule, time
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">def</span> <span class="fn">full_pipeline</span>():
+    <span class="fn">print</span>(<span class="str">f"\n{'='*50}"</span>)
+    <span class="fn">print</span>(<span class="str">f"🚀 Pipeline started at {datetime.now()}"</span>)
+    <span class="fn">print</span>(<span class="str">f"{'='*50}"</span>)
+    
+    <span class="fn">print</span>(<span class="str">"\n[1/3] Scraping MeroJob..."</span>)
+    <span class="fn">scrape_mero</span>()
+    
+    <span class="fn">print</span>(<span class="str">"\n[2/3] Scraping KumariJob..."</span>)
+    <span class="fn">scrape_kumari</span>()
+    
+    <span class="fn">print</span>(<span class="str">"\n[3/3] Cleaning & processing data..."</span>)
+    <span class="fn">clean_and_merge</span>()
+    
+    <span class="fn">print</span>(<span class="str">f"\n✅ Pipeline complete at {datetime.now()}"</span>)
+    <span class="fn">print</span>(<span class="str">"Dashboard will show updated data on next browser refresh.\n"</span>)
+
+<span class="cmt"># First run immediately on start</span>
+<span class="fn">print</span>(<span class="str">"Setting up database..."</span>)
+<span class="fn">setup_database</span>()
+
+<span class="fn">print</span>(<span class="str">"Running initial data collection..."</span>)
+<span class="fn">full_pipeline</span>()
+
+<span class="cmt"># Then run again every 7 days automatically</span>
+schedule.every(<span class="num">7</span>).days.<span class="fn">do</span>(full_pipeline)
+<span class="fn">print</span>(<span class="str">"📅 Scheduler active — runs every 7 days."</span>)
+<span class="fn">print</span>(<span class="str">"   Now run: streamlit run dashboard.py\n"</span>)
+
+<span class="kw">while</span> <span class="kw">True</span>:
+    schedule.run_pending()
+    time.<span class="fn">sleep</span>(<span class="num">60</span>)  <span class="cmt"># Check every minute</span></pre>
+      </div>
+      <div class="info-box success">
+        <div class="info-box-title">✅ How to Run the Entire Project</div>
+        Open <strong>two terminal windows</strong>. In the first: <code>python scheduler.py</code> — this scrapes and cleans data. In the second: <code>streamlit run dashboard.py</code> — this starts the live web dashboard. That's it!
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <h3>Team Responsibilities</h3>
+    <p>
+      <span class="accent">Person 1 (You):</span> scheduler.py, database.py, clean_data.py — the pipeline<br><br>
+      <span class="accent">Person 2:</span> merojob_scraper.py — modify to save to DB<br><br>
+      <span class="accent">Person 3:</span> scrape_kumari.py — modify to save to DB<br><br>
+      <span class="accent">Person 4:</span> eda_analysis.py + dashboard.py — charts and frontend
+    </p>
+  </div>
+  <div>
+    <h3>What "Real-Time" Means for Your Teacher</h3>
+    <p>
+      When your teacher says "real-time data," they mean the dashboard should show <span class="accent">currently active job listings</span>, not data from months ago. Your scheduler runs every 7 days, re-scrapes fresh listings, cleans them, and the dashboard reads the latest data instantly. That is a real-time data pipeline — <span class="accent">exactly what is expected at this level.</span>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
